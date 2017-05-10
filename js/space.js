@@ -37,16 +37,17 @@
     light.position.set(-100,200,100);
     scene.add(light);
 
-    image = document.createElement( 'img' );
-    document.body.appendChild( image );
-    var texture = new THREE.Texture( image );
-    image.addEventListener( 'load', function ( event ) { texture.needsUpdate = true; } );
-    image.src = "images/earth.jpg" ;
+    var bmap =  THREE.ImageUtils.loadTexture("images/earth-bump.jpg", {}, function(){});
+    var texture =  THREE.ImageUtils.loadTexture("images/earth.jpg", {}, function(){});
 
     var geometry = new THREE.SphereGeometry( 5, 32, 32 );
-    var material = new THREE.MeshPhongMaterial( { map: texture } );
+    var material = new THREE.MeshPhongMaterial({
+      map: texture,
+      bumpMap: bmap,
+      bumpScale: 0.01
+    });
     sphere = new THREE.Mesh( geometry, material );
-    sphere.position.set(0,0, 0);
+    sphere.position.set(0, 0, 0);
     scene.add( sphere );
 
 
@@ -59,11 +60,11 @@
     // create the mesh based on geometry and material
     var mesh  = new THREE.Mesh(geometry, material)
     scene.add( mesh );
-
+    console.log(sphere);
 
 
   // Add OrbitControls so that we can pan around with the mouse.
-  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  // controls = new THREE.OrbitControls(camera, renderer.domElement);
   }
 
   // Renders the scene and updates the render as needed.
@@ -72,12 +73,18 @@
     // Read more about requestAnimationFrame at http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
     requestAnimationFrame(animate);
 
+    // rotate earth
     sphere.rotation.y -= 0.0005;
     sphere.rotation.x -= 0.0005;
 
+    // Rotate Camera
+    // camera.position.z = sphere.position.z + 15 * Math.sin( 0.0001 * Date.now() );
+    // camera.position.x = sphere.position.x + 20 * Math.cos( 0.0001 * Date.now() );
+    // camera.lookAt( sphere.position );
+
     // Render the scene.
     renderer.render(scene, camera);
-    controls.update();
+    // controls.update();
 
   }
 
