@@ -1,6 +1,7 @@
 (function () {
     // Set up the scene, camera, and renderer as global variables.
   var scene, camera, renderer, image, sphere;
+  var clock = new THREE.Clock();
 
   // Sets up the scene.
   function init() {
@@ -40,11 +41,14 @@
     var bmap =  THREE.ImageUtils.loadTexture("images/earth-bump.jpg", {}, function(){});
     var texture =  THREE.ImageUtils.loadTexture("images/earth.jpg", {}, function(){});
 
+    // var bmap =  THREE.ImageUtils.loadTexture("images/face-bump.jpg", {}, function(){});
+    // var texture =  THREE.ImageUtils.loadTexture("images/face.jpg", {}, function(){});
+
     var geometry = new THREE.SphereGeometry( 5, 32, 32 );
     var material = new THREE.MeshPhongMaterial({
       map: texture,
       bumpMap: bmap,
-      bumpScale: 0.01
+      bumpScale: 0.01,
     });
     sphere = new THREE.Mesh( geometry, material );
     sphere.position.set(0, 0, 0);
@@ -65,6 +69,11 @@
 
   // Add OrbitControls so that we can pan around with the mouse.
   // controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls = new THREE.FlyControls(camera);
+  controls.movementSpeed = 10;
+  controls.rollSpeed = Math.PI / 24;
+  controls.autoForward = false;
+  controls.dragToLook = false;
   }
 
   // Renders the scene and updates the render as needed.
@@ -85,6 +94,8 @@
     // Render the scene.
     renderer.render(scene, camera);
     // controls.update();
+    var delta = clock.getDelta();
+    controls.update(delta);
 
   }
 
